@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify
 import mysql.connector
 
 app = Flask(__name__)
@@ -10,37 +11,39 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Define the MenuItems model
-
-
-class MenuItem(db.Model):
-    __tablename__ = 'menu_items'
-
-    item_id = db.Column(db.String(255), primary_key=True)
-    name = db.Column(db.String(255))
-    description = db.Column(db.Text)
-    price = db.Column(db.Integer)
-    category = db.Column(
-        db.Enum('Curry', 'Snacks', 'Drinks', 'Set Menu', 'Rice', 'Combo'))
-    image_url = db.Column(db.Text)
-
-# Route to get all items from the menu_items table
+# Route to get all items from the menu_items table using raw SQL query
 
 
 @app.route('/menu_items', methods=['GET'])
 def get_menu_items():
-    menu_items = MenuItem.query.all()
-    menu_items_list = []
-    for item in menu_items:
-        menu_items_list.append({
-            'item_id': item.item_id,
-            'name': item.name,
-            'description': item.description,
-            'price': item.price,
-            'category': item.category,
-            'image_url': item.image_url
-        })
-    return jsonify(menu_items_list)
+    try:
+        connection = mysql.connector.connect(
+            host='localhost', user='root', password='', database='notgreencafe')
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM menu_items"
+        cursor.execute(query)
+        menu_items = cursor.fetchall()
+
+        menu_items_list = []
+        for item in menu_items:
+            menu_items_list.append({
+                'item_id': item['item_id'],
+                'name': item['name'],
+                'description': item['description'],
+                'price': item['price'],
+                'category': item['category'],
+                'image_url': item['image_url']
+            })
+
+        return jsonify(menu_items_list)
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+    finally:
+        if connection:
+            connection.close()
 
 
 if __name__ == '__main__':
