@@ -1,23 +1,23 @@
+# app.py
+
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
+from config import DATABASE_CONFIG  # Import the database configuration
 
 app = Flask(__name__)
 
-# Configure the database connection
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost/notgreencafe'
+# Configure the database connection using values from the config file
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DATABASE_CONFIG['user']}:{DATABASE_CONFIG['password']}@{DATABASE_CONFIG['host']}/{DATABASE_CONFIG['database']}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 # Route to get all items from the menu_items table using raw SQL query
-
-
 @app.route('/menu_items', methods=['GET'])
 def get_menu_items():
     try:
-        connection = mysql.connector.connect(
-            host='localhost', user='root', password='', database='notgreencafe')
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
         cursor = connection.cursor(dictionary=True)
 
         query = "SELECT * FROM menu_items"
@@ -45,8 +45,6 @@ def get_menu_items():
             connection.close()
 
 # Route to get all orders using raw SQL query
-
-
 @app.route('/orders', methods=['GET'])
 def get_orders_route():
     return get_orders()
@@ -54,8 +52,7 @@ def get_orders_route():
 
 def get_orders():
     try:
-        connection = mysql.connector.connect(
-            host='localhost', user='root', password='', database='notgreencafe')
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
         cursor = connection.cursor(dictionary=True)
 
         query = "SELECT order_id, customer_id, item_id, quantity, total_price, status FROM orders"
