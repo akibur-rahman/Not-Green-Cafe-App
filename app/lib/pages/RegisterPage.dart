@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:app/models/userRegistration.dart';
+import 'package:http/http.dart' as http;
 import 'package:app/components/LoginRegisterButton.dart';
 import 'package:app/components/loginRegisterTextField.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +40,41 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future<void> _registerUser() async {
+    final userRegistration = UserRegistration(
+      name: '${firstNameController.text} ${lastNameController.text}',
+      email: emailController.text,
+      password: passwordController.text,
+      sex: sexController.text,
+      address: addressController.text,
+      birthdate: selectedDate ?? DateTime.now(),
+    );
+
+    final response = await registerUserApiCall(userRegistration);
+
+    if (response.statusCode == 200) {
+      print('User registration successful');
+      // Navigate to the Home Page or perform any other action
+    } else {
+      print('User registration failed: ${response.body}');
+      // Display an error message or handle the error accordingly
+    }
+  }
+
+  Future<http.Response> registerUserApiCall(UserRegistration user) async {
+    final uri = Uri.parse('http://10.0.2.2:5000/register');
+
+    final response = await http.post(
+      uri, // Replace with your API endpoint
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,15 +87,15 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
-                  Icon(
+                  const Icon(
                     Icons.message,
                     size: 100,
                   ),
-                  SizedBox(height: 50),
-                  Text(
+                  const SizedBox(height: 50),
+                  const Text(
                     "Let's Create an account for you!",
                     style: TextStyle(
                       fontSize: 16,
@@ -131,27 +169,30 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: "Address",
                       obscureText: false),
                   SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text("Birthdate:"),
-                      SizedBox(width: 10),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff97CF6E),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text("Birthdate:"),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff97CF6E),
+                          ),
+                          onPressed: () => _selectDate(context),
+                          child: Text(
+                            selectedDate != null
+                                ? 'Selected Date: ${selectedDate!.toLocal()}'
+                                : 'Select Birthdate',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
-                        onPressed: () => _selectDate(context),
-                        child: Text(
-                          selectedDate != null
-                              ? 'Selected Date: ${selectedDate!.toLocal()}'
-                              : 'Select Birthdate',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(height: 25),
                   LoginRegisterButton(
-                    onTap: () {},
+                    onTap: _registerUser,
                     text: "Sign Up",
                   ),
                   SizedBox(height: 50),

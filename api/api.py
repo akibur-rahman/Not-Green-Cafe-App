@@ -137,6 +137,41 @@ def logout():
     session.clear()
     return jsonify({'message': 'Logout successful'}), 200
 
+
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+        data = request.get_json()
+
+        # Extract user data from the request
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        sex = data.get('sex')
+        address = data.get('address')
+        birthdate = data.get('birthdate')
+
+        # Validate that all required fields are provided
+        if not name or not email or not password or not sex or not address or not birthdate:
+            return jsonify({'error': 'All fields are required'}), 400
+
+        # Insert the new user into the database
+        query = "INSERT INTO users (name, email, password, sex, address, birthdate) VALUES (%s, %s, %s, %s, %s, %s)"
+        params = (name, email, password, sex, address, birthdate)
+        cursor.execute(query, params)
+        connection.commit()
+
+        return jsonify({'message': 'Registration successful'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+    finally:
+        if cursor:
+            cursor.close()
+
 # Ensure to add this part to close the connection after the server is stopped
 
 
