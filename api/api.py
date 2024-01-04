@@ -228,6 +228,7 @@ def register():
         sex = data.get('sex')
         address = data.get('address')
         birthdate = data.get('birthdate')
+        profile_picture_url = data.get('profile_picture_url')  # Added line
 
         # Validate that all required fields are provided
         if not name or not email or not password or not sex or not address or not birthdate:
@@ -237,8 +238,10 @@ def register():
         user_id = str(uuid.uuid4())
 
         # Insert the new user into the database
-        query = "INSERT INTO users (user_id, name, email, password, sex, address, birthdate) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        params = (user_id, name, email, password, sex, address, birthdate)
+        # Modified line
+        query = "INSERT INTO users (user_id, name, email, password, sex, address, birthdate, profile_picture_url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        params = (user_id, name, email, password, sex, address,
+                  birthdate, profile_picture_url)  # Modified line
         cursor.execute(query, params)
         connection.commit()
 

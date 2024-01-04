@@ -23,6 +23,8 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
   final TextEditingController sexController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController profilePictureController =
+      TextEditingController(); // Added line
   DateTime? selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -49,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
       sex: sexController.text,
       address: addressController.text,
       birthdate: selectedDate ?? DateTime.now(),
-      userPhoto: '',
+      userPhoto: profilePictureController.text, // Updated line
     );
 
     final response = await registerUserApiCall(userRegistration);
@@ -58,14 +60,14 @@ class _RegisterPageState extends State<RegisterPage> {
       //show snakbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Regestration Successful, Please Login Now'),
+          content: Text('Registration Successful, Please Login Now'),
         ),
       );
     } else {
       //show snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Regestration Failed'),
+          content: Text('Registration Failed'),
         ),
       );
     }
@@ -177,6 +179,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   LoginRegisterTextField(
                       controller: addressController,
                       hintText: "Address",
+                      obscureText: false),
+                  SizedBox(height: 10),
+                  LoginRegisterTextField(
+                      controller: profilePictureController, // Added line
+                      hintText: "Profile Picture URL", // Added line
                       obscureText: false),
                   SizedBox(height: 10),
                   SingleChildScrollView(
