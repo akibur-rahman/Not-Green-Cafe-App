@@ -146,7 +146,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
+                    backgroundColor: Colors.green,
                   ),
                   onPressed: () {
                     buyNow(widget.userId, widget.menuItem.itemId,
