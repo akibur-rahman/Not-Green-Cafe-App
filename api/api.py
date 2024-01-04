@@ -4,6 +4,7 @@ from flask import jsonify, session, request
 from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
+import uuid
 from config import DATABASE_CONFIG  # Import the database configuration
 
 app = Flask(__name__)
@@ -149,6 +150,59 @@ def home():
 # ...
 
 
+@app.route('/place_order', methods=['POST'])
+def place_order():
+    try:
+        # Connect to the database
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+
+        # Get order data from the request
+        data = request.get_json()
+        customer_id = data.get('customer_id')
+        item_id = data.get('item_id')
+        quantity = data.get('quantity')
+
+        # Validate that all required fields are provided
+        if not customer_id or not item_id or not quantity:
+            return jsonify({'error': 'Customer ID, Item ID, and Quantity are required'}), 400
+
+        # Fetch the item price based on item_id from the menu_items table
+        query = "SELECT price FROM menu_items WHERE item_id = %s"
+        cursor.execute(query, (item_id,))
+        item = cursor.fetchone()
+
+        # Check if the item exists
+        if not item:
+            return jsonify({'error': 'Item not found'}), 404
+
+        # Calculate total price using the actual item price
+        item_price = item['price']
+        total_price = quantity * item_price
+
+        # Generate a UUID for order_id
+        order_id = str(uuid.uuid4())
+
+        # Insert the order into the database
+        query = "INSERT INTO orders (order_id, customer_id, item_id, quantity, total_price, status) VALUES (%s, %s, %s, %s, %s, %s)"
+        params = (order_id, customer_id, item_id,
+                  quantity, total_price, 'Processing')
+        cursor.execute(query, params)
+
+        # Commit the transaction
+        connection.commit()
+
+        return jsonify({'message': 'Order placed successfully'}), 201
+
+    except Exception as e:
+        print(f'Error: {e}')
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+    finally:
+        if connection:
+            connection.close()
+
+
 @app.route('/logout', methods=['GET'])
 def logout():
     # Clear the session to log out the user
@@ -175,9 +229,12 @@ def register():
         if not name or not email or not password or not sex or not address or not birthdate:
             return jsonify({'error': 'All fields are required'}), 400
 
+        # Generate a UUID for user_id
+        user_id = str(uuid.uuid4())
+
         # Insert the new user into the database
-        query = "INSERT INTO users (name, email, password, sex, address, birthdate) VALUES (%s, %s, %s, %s, %s, %s)"
-        params = (name, email, password, sex, address, birthdate)
+        query = "INSERT INTO users (user_id, name, email, password, sex, address, birthdate) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        params = (user_id, name, email, password, sex, address, birthdate)
         cursor.execute(query, params)
         connection.commit()
 
@@ -189,7 +246,6 @@ def register():
     finally:
         if cursor:
             cursor.close()
-
 # Ensure to add this part to close the connection after the server is stopped
 
 
