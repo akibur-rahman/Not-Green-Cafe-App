@@ -35,11 +35,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       );
 
       if (response.statusCode == 201) {
-        // Order placed successfully
-        print('Order placed successfully');
+        //show snakbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Order Placed Successfully'),
+          ),
+        );
       } else {
-        // Handle API error
-        print('Error: ${response.reasonPhrase}');
+        //show snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Order Failed'),
+          ),
+        );
       }
     } catch (e) {
       // Handle network or decoding errors
