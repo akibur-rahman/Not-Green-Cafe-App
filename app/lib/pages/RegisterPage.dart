@@ -55,11 +55,19 @@ class _RegisterPageState extends State<RegisterPage> {
     final response = await registerUserApiCall(userRegistration);
 
     if (response.statusCode == 200) {
-      print('User registration successful');
-      // Navigate to the Home Page or perform any other action
+      //show snakbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Regestration Successful, Please Login Now'),
+        ),
+      );
     } else {
-      print('User registration failed: ${response.body}');
-      // Display an error message or handle the error accordingly
+      //show snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Regestration Failed'),
+        ),
+      );
     }
   }
 

@@ -99,11 +99,13 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 50,
                   ),
-                  Icon(
-                    Icons.message,
-                    size: 100,
+                  //add logo.png form assets
+                  Image.asset(
+                    "assets/images/logo.png",
+                    //increase the size of logo
+                    height: 400,
                   ),
-                  SizedBox(height: 50),
+
                   Text(
                     "Welcome back. You've been missed!",
                     style: TextStyle(
