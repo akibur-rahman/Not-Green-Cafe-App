@@ -1,3 +1,6 @@
+# Import your database configuration module
+from config import DATABASE_CONFIG
+from flask import jsonify, session, request
 from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
@@ -103,10 +106,25 @@ def login():
         cursor.execute(query, params)
         user = cursor.fetchone()
 
-        # If user exists, store user_id in session and return a success message
+        # If user exists, store user_id in session and return all user data
         if user:
             session['user_id'] = user['user_id']
-            return jsonify({'message': 'Login successful'}), 200
+
+            # Fetch all data for the user
+            user_data_query = "SELECT * FROM users WHERE user_id = %s"
+            user_data_params = (user['user_id'],)
+            cursor.execute(user_data_query, user_data_params)
+            user_data = cursor.fetchone()
+
+            # Ensure user_data is present in the response
+            if user_data:
+                return jsonify({
+                    'message': 'Login successful',
+                    'userData': user_data
+                }), 200
+            else:
+                return jsonify({'error': 'Invalid response from the server'}), 500
+
         else:
             return jsonify({'error': 'Invalid email or password'}), 401
 

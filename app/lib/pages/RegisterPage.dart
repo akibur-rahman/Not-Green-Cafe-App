@@ -48,6 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
       sex: sexController.text,
       address: addressController.text,
       birthdate: selectedDate ?? DateTime.now(),
+      userPhoto: '',
     );
 
     final response = await registerUserApiCall(userRegistration);
