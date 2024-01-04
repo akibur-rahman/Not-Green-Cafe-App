@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'package:app/models/LoggedInUser.dart';
 import 'package:app/components/MenuItemWidget.dart';
 import 'package:app/models/menuItem.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final UserData userData; // Add this line
+
+  const HomePage({Key? key, required this.userData}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -55,11 +58,48 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Menu'),
+        title: const Text('Menu'),
         centerTitle: true,
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundImage:
+                        NetworkImage(widget.userData.profilePictureUrl),
+                    radius: 40,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    widget.userData.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text('Item 1'),
+              onTap: () {
+                // Handle drawer item click
+              },
+            ),
+            // ... Add more drawer items as needed ...
+          ],
+        ),
+      ),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,

@@ -1,4 +1,5 @@
 # Import your database configuration module
+import secrets
 from config import DATABASE_CONFIG
 from flask import jsonify, session, request
 from flask import Flask, jsonify, request, session
@@ -8,6 +9,9 @@ import uuid
 from config import DATABASE_CONFIG  # Import the database configuration
 
 app = Flask(__name__)
+
+# Set the secret key for the Flask application
+app.secret_key = secrets.token_hex(16)
 
 # Configure the database connection using values from the config file
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DATABASE_CONFIG['user']}:{

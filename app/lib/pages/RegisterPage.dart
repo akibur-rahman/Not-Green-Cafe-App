@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:app/models/userRegistration.dart';
+import 'package:app/models/RegistedUser.dart';
 import 'package:http/http.dart' as http;
 import 'package:app/components/LoginRegisterButton.dart';
 import 'package:app/components/loginRegisterTextField.dart';
@@ -42,6 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _registerUser() async {
     final userRegistration = UserRegistration(
+      user_id: '',
       name: '${firstNameController.text} ${lastNameController.text}',
       email: emailController.text,
       password: passwordController.text,

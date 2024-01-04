@@ -1,3 +1,4 @@
+import 'package:app/models/LoggedInUser.dart';
 import 'package:app/pages/Homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:app/components/LoginRegisterButton.dart';
@@ -20,31 +21,66 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> loginUser() async {
     final String apiUrl = 'http://10.0.2.2:5000/login';
 
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(<String, String>{
-        'email': emailController.text,
-        'password': passwordController.text,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Login successful, navigate to the Homepage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                HomePage()), // Replace HomePage with your actual HomePage widget
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'email': emailController.text,
+          'password': passwordController.text,
+        }),
       );
-    } else if (response.statusCode == 401) {
-      // Invalid email or password, show a popup or any other indication
-      print('Invalid email or password');
-    } else {
-      // Other errors, handle accordingly
-      print('Error: ${response.reasonPhrase}');
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        if (responseData != null && responseData['userData'] != null) {
+          final Map<String, dynamic> userDataMap = responseData['userData'];
+
+          final UserData userData = UserData.fromJson(userDataMap);
+
+          // Use the userData object as needed
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(userData: userData),
+            ),
+          );
+        } else {
+          //show snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invalid email or password'),
+            ),
+          );
+        }
+      } else if (response.statusCode == 401) {
+        // Invalid email or password
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Invalid email or password'),
+          ),
+        );
+      } else {
+        // Other errors
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${response.reasonPhrase}'),
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle network or decoding errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
     }
   }
 
