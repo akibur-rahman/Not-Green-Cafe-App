@@ -106,7 +106,10 @@ class _HomePageState extends State<HomePage> {
         ),
         itemCount: menuItems.length,
         itemBuilder: (context, index) {
-          return MenuItemWidget(menuItem: menuItems[index]);
+          return MenuItemWidget(
+            menuItem: menuItems[index],
+            userId: widget.userData.userId,
+          );
         },
       ),
     );

@@ -1,11 +1,13 @@
 import 'package:app/pages/ProductDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/menuItem.dart';
+import 'package:app/pages/ProductDetails.dart';
 
 class MenuItemWidget extends StatelessWidget {
   final MenuItem menuItem;
-
-  const MenuItemWidget({Key? key, required this.menuItem}) : super(key: key);
+  final String userId;
+  const MenuItemWidget({Key? key, required this.menuItem, required this.userId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,10 @@ class MenuItemWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailsPage(menuItem: menuItem),
+            builder: (context) => ProductDetailsPage(
+              menuItem: menuItem,
+              userId: userId,
+            ),
           ),
         );
       },

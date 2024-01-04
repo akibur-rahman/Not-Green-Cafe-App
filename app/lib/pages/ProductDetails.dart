@@ -6,8 +6,10 @@ import 'package:app/models/menuItem.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final MenuItem menuItem;
+  final String userId;
 
-  const ProductDetailsPage({Key? key, required this.menuItem})
+  const ProductDetailsPage(
+      {Key? key, required this.menuItem, required this.userId})
       : super(key: key);
 
   @override
@@ -18,8 +20,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   int selectedQuantity = 1;
 
   Future<void> buyNow(String customerId, String itemId, int quantity) async {
-    final apiUrl =
-        'http://10.0.2.2:5000/place_order'; // Replace with your API endpoint
+    if (widget.userId == null) {
+      print('UserId is null');
+      return;
+    }
+
+    final apiUrl = 'http://10.0.2.2:5000/place_order';
 
     try {
       final response = await http.post(
@@ -28,8 +34,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, dynamic>{
-          'customer_id': '11',
-          'item_id': '101',
+          'customer_id': widget.userId,
+          'item_id': widget.menuItem.itemId,
           'quantity': selectedQuantity,
         }),
       );
@@ -143,7 +149,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     primary: Colors.green,
                   ),
                   onPressed: () {
-                    buyNow('11', '102', selectedQuantity);
+                    buyNow(widget.userId, widget.menuItem.itemId,
+                        selectedQuantity);
                   },
                   child: Text(
                     'Buy Now',
