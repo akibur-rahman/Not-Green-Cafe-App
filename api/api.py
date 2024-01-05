@@ -53,6 +53,49 @@ def get_menu_items():
         if connection:
             connection.close()
 
+
+# Route to insert a new menu item
+@app.route('/add_menu_items', methods=['POST'])
+def insert_menu_item():
+    try:
+        # Connect to the database
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+
+        # Get menu item data from the request
+        data = request.get_json()
+        name = data.get('name')
+        description = data.get('description')
+        price = data.get('price')
+        category = data.get('category')  # Retrieve category as string
+        image_url = data.get('image_url')
+
+        # Validate that all required fields are provided
+        if not name or not description or not price or not category or not image_url:
+            return jsonify({'error': 'All fields are required'}), 400
+
+        # Generate a UUID for item_id
+        item_id = str(uuid.uuid4())
+
+        # Insert the new menu item into the database
+        query = "INSERT INTO menu_items (item_id, name, description, price, category, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        params = (item_id, name, description, price, category, image_url)
+        cursor.execute(query, params)
+
+        # Commit the transaction
+        connection.commit()
+
+        return jsonify({'message': 'Menu item added successfully'}), 201
+
+    except Exception as e:
+        print(f'Error: {e}')
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+    finally:
+        print(f'Data received: {data}')
+        if connection:
+            connection.close()
+
 # Route to get all orders using raw SQL query
 
 

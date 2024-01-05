@@ -45,6 +45,114 @@ class _AdminHomePageState extends State<AdminHomePage> {
     }
   }
 
+  void _showAddItemDialog(BuildContext context) {
+    String itemName = '';
+    String itemDescription = '';
+    double itemPrice = 0.0;
+    String itemCategory = '';
+    String itemImageUrl = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add New Item'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Name'),
+                  onChanged: (value) {
+                    itemName = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Description'),
+                  onChanged: (value) {
+                    itemDescription = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Price'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    itemPrice = double.tryParse(value) ?? 0.0;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Category'),
+                  onChanged: (value) {
+                    itemCategory = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Image URL'),
+                  onChanged: (value) {
+                    itemImageUrl = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _addItem(
+                  itemName: itemName,
+                  itemDescription: itemDescription,
+                  itemPrice: itemPrice,
+                  itemCategory: itemCategory,
+                  itemImageUrl: itemImageUrl,
+                );
+                Navigator.pop(context);
+              },
+              child: Text('Add Item'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addItem({
+    required String itemName,
+    required String itemDescription,
+    required double itemPrice,
+    required String itemCategory,
+    required String itemImageUrl,
+  }) async {
+    final apiUrl = 'http://10.0.2.2:5000/add_menu_items';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': itemName,
+          'description': itemDescription,
+          'price': itemPrice,
+          'category': itemCategory,
+          'image_url': itemImageUrl,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        print('Item added successfully');
+        fetchMenuItems(); // Refresh the list after adding a new item
+      } else {
+        print('Error adding new item: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -151,7 +259,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _showAddItemDialog(context);
+        },
         backgroundColor: Colors.green[500],
         child: const Icon(Icons.add),
       ),
