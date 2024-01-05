@@ -1,4 +1,5 @@
 import 'package:app/models/LoggedInUser.dart';
+import 'package:app/pages/AdminLoginPage.dart';
 import 'package:app/pages/Homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:app/components/LoginRegisterButton.dart';
@@ -103,14 +104,18 @@ class _LoginPageState extends State<LoginPage> {
                   Image.asset(
                     "assets/images/logo.png",
                     //increase the size of logo
-                    height: 400,
+                    height: 200,
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
 
                   Text(
                     "Welcome back. You've been missed!",
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
+                      color: Colors.green[900],
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 25),
@@ -136,6 +141,31 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text("Are you an admin?"),
+                      SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdminLoginPage()));
+                        },
+                        child: Text(
+                          "Login Here",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff97CF6E),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Text("Not a member?"),
                       SizedBox(width: 4),
                       GestureDetector(
@@ -147,6 +177,9 @@ class _LoginPageState extends State<LoginPage> {
                             color: Color(0xff97CF6E),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                     ],
                   )

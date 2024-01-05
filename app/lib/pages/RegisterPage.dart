@@ -102,16 +102,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(
                     height: 50,
                   ),
-                  const Icon(
-                    Icons.message,
-                    size: 100,
+                  Image.asset(
+                    "assets/images/logo.png",
+                    //increase the size of logo
+                    height: 200,
                   ),
                   const SizedBox(height: 50),
                   const Text(
                     "Let's Create an account for you!",
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 25),
@@ -226,6 +228,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               fontWeight: FontWeight.bold,
                               color: Color(0xff97CF6E)),
                         ),
+                      ),
+                      SizedBox(
+                        height: 100,
                       ),
                     ],
                   ),

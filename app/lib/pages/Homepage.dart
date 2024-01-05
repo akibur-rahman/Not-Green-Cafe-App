@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   List<MenuItem> menuItems = [];
 
   Future<void> fetchMenuItems() async {
-    const apiUrl = 'http://10.0.2.2:5000/menu_items';
+    final apiUrl = 'http://10.0.2.2:5000/menu_items';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -40,13 +40,8 @@ class _HomePageState extends State<HomePage> {
           }).toList();
         });
       } else {
-        //show snackbar
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to load menu items'),
-          ),
-        );
+        // Handle API error
+        print('Error: ${response.reasonPhrase}');
       }
     } catch (e) {
       // Handle network or decoding errors
@@ -61,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> logout() async {
-    const apiUrl =
+    final apiUrl =
         'http://10.0.2.2:5000/logout'; // Replace with your API endpoint
 
     try {
@@ -76,50 +71,43 @@ class _HomePageState extends State<HomePage> {
       );
 
       if (response.statusCode == 200) {
-        // Navigate to the login page after successful logout
-        // ignore: use_build_context_synchronously
-
-        //show popup to confirm user logout and then navigate to login page
+        // show a dialog if the user is sure to logout, if yes then Navigate to the login page after successful logout
         // ignore: use_build_context_synchronously
         showDialog(
           context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Logout'),
-              content: const Text('Are you sure you want to logout?'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('No'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(
-                          onTap: null,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text('Yes'),
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        //shackbar
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Logout Failed'),
+          builder: (context) => AlertDialog(
+            title: Text('Logout'),
+            content: Text('Are you sure you want to logout?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Yes'),
+              ),
+            ],
           ),
-        );
+        ).then((value) {
+          if (value) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginPage(
+                  onTap: () {},
+                ),
+              ),
+            );
+          }
+        });
+      } else {
+        // Handle API error
+        print('Error: ${response.reasonPhrase}');
       }
     } catch (e) {
       // Handle network or decoding errors
@@ -131,14 +119,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Delicious Dishes',
-        ),
+        title: const Text('Menu'),
         centerTitle: true,
         backgroundColor: Colors.green[300],
       ),
       drawer: Drawer(
-        backgroundColor: Colors.green[50],
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
