@@ -1,7 +1,6 @@
 import 'package:app/pages/ProductDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/menuItem.dart';
-import 'package:app/pages/ProductDetails.dart';
 
 class MenuItemWidget extends StatelessWidget {
   final MenuItem menuItem;

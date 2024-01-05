@@ -40,8 +40,13 @@ class _HomePageState extends State<HomePage> {
           }).toList();
         });
       } else {
-        // Handle API error
-        print('Error: ${response.reasonPhrase}');
+        //show snackbar
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to load menu items'),
+          ),
+        );
       }
     } catch (e) {
       // Handle network or decoding errors
@@ -75,18 +80,19 @@ class _HomePageState extends State<HomePage> {
         // ignore: use_build_context_synchronously
 
         //show popup to confirm user logout and then navigate to login page
+        // ignore: use_build_context_synchronously
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Logout'),
-              content: Text('Are you sure you want to logout?'),
+              title: const Text('Logout'),
+              content: const Text('Are you sure you want to logout?'),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('No'),
+                  child: const Text('No'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -94,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginPage(
+                        builder: (context) => const LoginPage(
                           onTap: null,
                         ),
                       ),
@@ -108,6 +114,7 @@ class _HomePageState extends State<HomePage> {
         );
       } else {
         //shackbar
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Logout Failed'),
@@ -126,18 +133,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(
           'Delicious Dishes',
-          style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
         backgroundColor: Colors.green[300],
       ),
       drawer: Drawer(
+        backgroundColor: Colors.green[50],
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.green[50],
+                color: Colors.green[300],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,10 +158,10 @@ class _HomePageState extends State<HomePage> {
                               NetworkImage(widget.userData.profilePictureUrl),
                           radius: 50,
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
                           widget.userData.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -167,8 +174,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
               onTap: logout, // Call the logout method on tap
             ),
           ],
