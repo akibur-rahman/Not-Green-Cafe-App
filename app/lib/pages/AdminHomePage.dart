@@ -4,6 +4,15 @@ import 'package:app/models/menuItem.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+enum CategoryEnum {
+  Curry,
+  Snacks,
+  Drinks,
+  SetMenu,
+  Rice,
+  Combo,
+}
+
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({Key? key});
 
@@ -13,6 +22,7 @@ class AdminHomePage extends StatefulWidget {
 
 class _AdminHomePageState extends State<AdminHomePage> {
   List<MenuItem> menuItems = [];
+  CategoryEnum? selectedCategory;
 
   Future<void> fetchMenuItems() async {
     final apiUrl = 'http://10.0.2.2:5000/menu_items';
@@ -49,7 +59,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
     String itemName = '';
     String itemDescription = '';
     double itemPrice = 0.0;
-    String itemCategory = '';
     String itemImageUrl = '';
 
     showDialog(
@@ -79,11 +88,21 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     itemPrice = double.tryParse(value) ?? 0.0;
                   },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Category'),
-                  onChanged: (value) {
-                    itemCategory = value;
+                // Dropdown for Category
+                DropdownButton<CategoryEnum>(
+                  hint: Text('Select Category'),
+                  value: selectedCategory,
+                  onChanged: (CategoryEnum? value) {
+                    setState(() {
+                      selectedCategory = value;
+                    });
                   },
+                  items: CategoryEnum.values.map((CategoryEnum category) {
+                    return DropdownMenuItem<CategoryEnum>(
+                      value: category,
+                      child: Text(category.toString().split('.').last),
+                    );
+                  }).toList(),
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Image URL'),
@@ -107,7 +126,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   itemName: itemName,
                   itemDescription: itemDescription,
                   itemPrice: itemPrice,
-                  itemCategory: itemCategory,
+                  itemCategory:
+                      selectedCategory?.toString().split('.').last ?? '',
                   itemImageUrl: itemImageUrl,
                 );
                 Navigator.pop(context);
