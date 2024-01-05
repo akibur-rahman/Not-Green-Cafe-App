@@ -124,6 +124,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.green[300],
       ),
       drawer: Drawer(
+        backgroundColor: Colors.green[50],
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
