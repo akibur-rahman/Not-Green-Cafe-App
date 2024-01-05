@@ -93,7 +93,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '\$${widget.menuItem.price.toStringAsFixed(2)}',
+                          '\৳${widget.menuItem.price.toStringAsFixed(2)}',
                           style: TextStyle(fontSize: 18, color: Colors.green),
                         ),
                       ],

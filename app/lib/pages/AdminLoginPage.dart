@@ -1,6 +1,7 @@
 import 'package:app/components/LoginRegisterButton.dart';
 import 'package:app/components/LoginRegisterTextField.dart';
 import 'package:app/pages/AdminHomePage.dart';
+import 'package:app/pages/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -111,6 +112,27 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
               LoginRegisterButton(onTap: adminLogin, text: 'Login'),
               SizedBox(
                 height: 10,
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Not an admin?"),
+                  SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
+                    child: Text(
+                      "Login as user",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff97CF6E),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

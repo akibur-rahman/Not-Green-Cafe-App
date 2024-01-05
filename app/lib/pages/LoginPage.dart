@@ -1,6 +1,7 @@
 import 'package:app/models/LoggedInUser.dart';
 import 'package:app/pages/AdminLoginPage.dart';
 import 'package:app/pages/Homepage.dart';
+import 'package:app/pages/RegisterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:app/components/LoginRegisterButton.dart';
 import 'package:app/components/LoginRegisterTextField.dart';
@@ -8,8 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
-  final void Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -169,7 +169,12 @@ class _LoginPageState extends State<LoginPage> {
                       Text("Not a member?"),
                       SizedBox(width: 4),
                       GestureDetector(
-                        onTap: widget.onTap,
+                        onTap: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterPage()));
+                        },
                         child: Text(
                           "Register Now",
                           style: TextStyle(

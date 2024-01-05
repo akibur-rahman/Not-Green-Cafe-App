@@ -1,4 +1,4 @@
-import 'package:app/services/auth/LoginOrRegister.dart';
+import 'package:app/pages/LoginPage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
             .copyWith(background: Colors.green[50]),
       ),
-      home: LoginOrRegister(),
+      home: LoginPage(),
     );
   }
 }

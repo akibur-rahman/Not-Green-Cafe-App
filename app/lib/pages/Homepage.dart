@@ -98,9 +98,7 @@ class _HomePageState extends State<HomePage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => LoginPage(
-                  onTap: () {},
-                ),
+                builder: (context) => LoginPage(),
               ),
             );
           }

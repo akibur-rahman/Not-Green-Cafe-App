@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/models/menuItem.dart';
+import 'package:app/pages/AdminLoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -90,7 +91,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 ),
                 // Dropdown for Category
                 DropdownButton<CategoryEnum>(
-                  hint: Text('Select Category'),
+                  hint: Text(
+                    'Select Category',
+                    style: TextStyle(color: Colors.black),
+                  ),
                   value: selectedCategory,
                   onChanged: (CategoryEnum? value) {
                     setState(() {
@@ -222,6 +226,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 ],
               ),
             ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => AdminLoginPage()));
+              },
+            ),
           ],
         ),
       ),
@@ -265,7 +277,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                       ), // Add padding here
                       Expanded(
                         child: Text(
-                          '\$${menuItems[index].price.toStringAsFixed(2)}',
+                          '\৳${menuItems[index].price.toStringAsFixed(2)}',
                           style: const TextStyle(
                               fontSize: 14, color: Colors.green),
                         ),

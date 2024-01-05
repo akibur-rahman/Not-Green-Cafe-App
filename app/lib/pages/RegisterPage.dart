@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:app/models/RegistedUser.dart';
+import 'package:app/pages/LoginPage.dart';
 import 'package:http/http.dart' as http;
 import 'package:app/components/LoginRegisterButton.dart';
 import 'package:app/components/loginRegisterTextField.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
-  final void Function()? onTap;
-
-  const RegisterPage({super.key, required this.onTap});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -221,9 +220,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text("Already registered?"),
                       SizedBox(width: 4),
                       GestureDetector(
-                        onTap: widget.onTap,
+                        onTap: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        },
                         child: Text(
-                          "Login Now",
+                          "Login",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Color(0xff97CF6E)),

@@ -46,7 +46,7 @@ class MenuItemWidget extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    '\$${menuItem.price.toStringAsFixed(2)}',
+                    '\৳${menuItem.price.toStringAsFixed(2)}',
                     style: TextStyle(fontSize: 14, color: Colors.green),
                   ),
                 ],
