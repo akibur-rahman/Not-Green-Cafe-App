@@ -33,3 +33,8 @@ CREATE TABLE `orders` (
   FOREIGN KEY (`customer_id`) REFERENCES `users`(`user_id`),
   FOREIGN KEY (`item_id`) REFERENCES `menu_items`(`item_id`)
 );
+
+CREATE TABLE `admin` (
+  `username` varchar(255) NOT NULL PRIMARY KEY,
+  `password` varchar(255) DEFAULT NULL
+);

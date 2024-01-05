@@ -207,6 +207,42 @@ def place_order():
             connection.close()
 
 
+@app.route('/admin/login', methods=['POST'])
+def admin_login():
+    try:
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+
+        # Validate that both username and password are provided
+        if not username or not password:
+            return jsonify({'error': 'Username and password are required'}), 400
+
+        # Query the database to check if the admin exists
+        query = "SELECT * FROM admin WHERE username = %s AND password = %s"
+        params = (username, password)
+        cursor.execute(query, params)
+        admin = cursor.fetchone()
+
+        # If admin exists, return success message
+        if admin:
+            return jsonify({'message': 'Admin login successful'}), 200
+        else:
+            return jsonify({'error': 'Invalid username or password'}), 401
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
 @app.route('/logout', methods=['POST'])
 def logout():
     try:

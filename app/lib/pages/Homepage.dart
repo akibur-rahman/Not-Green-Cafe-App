@@ -158,10 +158,10 @@ class _HomePageState extends State<HomePage> {
                               NetworkImage(widget.userData.profilePictureUrl),
                           radius: 50,
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
                           widget.userData.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -174,8 +174,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
               onTap: logout, // Call the logout method on tap
             ),
           ],
