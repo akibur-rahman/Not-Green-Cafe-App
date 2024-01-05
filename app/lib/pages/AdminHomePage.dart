@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:app/components/MenuItemWidget.dart';
 import 'package:app/models/menuItem.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -69,7 +68,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               decoration: BoxDecoration(
                 color: Colors.green[300],
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
@@ -77,7 +76,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.add_home_outlined,
+                          Icons.admin_panel_settings_rounded,
                           size: 100,
                         ),
                         SizedBox(height: 8),
@@ -111,7 +110,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 elevation: 3,
                 clipBehavior: Clip.antiAlias,
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(8.0),
+                  contentPadding: const EdgeInsets.all(8.0),
                   leading: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -121,11 +120,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   ),
                   title: Row(
                     children: [
-                      SizedBox(width: 40), // Add padding here
+                      const SizedBox(width: 40), // Add padding here
                       Expanded(
                         child: Text(
                           menuItems[index].name,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -133,13 +132,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   ),
                   subtitle: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 40,
                       ), // Add padding here
                       Expanded(
                         child: Text(
                           '\$${menuItems[index].price.toStringAsFixed(2)}',
-                          style: TextStyle(fontSize: 14, color: Colors.green),
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.green),
                         ),
                       ),
                     ],
