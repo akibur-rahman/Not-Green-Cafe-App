@@ -207,11 +207,28 @@ def place_order():
             connection.close()
 
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['POST'])
 def logout():
-    # Clear the session to log out the user
-    session.clear()
-    return jsonify({'message': 'Logout successful'}), 200
+    try:
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+        data = request.get_json()
+
+        user_id = data.get('user_id')
+
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+
+        # Perform logout actions if needed
+
+        return jsonify({'message': 'Logout successful'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+    finally:
+        if cursor:
+            cursor.close()
 
 
 @app.route('/register', methods=['POST'])

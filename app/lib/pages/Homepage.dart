@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:app/models/LoggedInUser.dart';
 import 'package:app/components/MenuItemWidget.dart';
 import 'package:app/models/menuItem.dart';
+import 'package:app/pages/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   List<MenuItem> menuItems = [];
 
   Future<void> fetchMenuItems() async {
-    final apiUrl = 'http://10.0.2.2:5000/menu_items';
+    const apiUrl = 'http://10.0.2.2:5000/menu_items';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -54,47 +55,122 @@ class _HomePageState extends State<HomePage> {
     fetchMenuItems();
   }
 
+  Future<void> logout() async {
+    const apiUrl =
+        'http://10.0.2.2:5000/logout'; // Replace with your API endpoint
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'user_id': widget.userData.userId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Navigate to the login page after successful logout
+        // ignore: use_build_context_synchronously
+
+        //show popup to confirm user logout and then navigate to login page
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Logout'),
+              content: Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('No'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(
+                          onTap: null,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('Yes'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        //shackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Logout Failed'),
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle network or decoding errors
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menu'),
+        title: const Text(
+          'Delicious Dishes',
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.green[300],
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.blue,
+              decoration: BoxDecoration(
+                color: Colors.green[50],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(widget.userData.profilePictureUrl),
-                    radius: 40,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    widget.userData.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(widget.userData.profilePictureUrl),
+                          radius: 50,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          widget.userData.name,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
             ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                // Handle drawer item click
-              },
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: logout, // Call the logout method on tap
             ),
-            // ... Add more drawer items as needed ...
           ],
         ),
       ),

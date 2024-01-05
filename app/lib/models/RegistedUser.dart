@@ -6,7 +6,7 @@ class UserRegistration {
   final String sex;
   final String address;
   final DateTime birthdate;
-  final String userPhoto;
+  final String userPhoto; // Assuming userPhoto is the profile picture URL
 
   UserRegistration({
     required this.user_id,
@@ -19,7 +19,6 @@ class UserRegistration {
     required this.userPhoto,
   });
 
-  // Convert the UserRegistration object to a Map for JSON serialization
   Map<String, dynamic> toJson() {
     return {
       'user_id': user_id,
@@ -28,23 +27,8 @@ class UserRegistration {
       'password': password,
       'sex': sex,
       'address': address,
-      'birthdate':
-          birthdate.toIso8601String(), // Convert DateTime to ISO 8601 string
-      'userPhoto': userPhoto,
+      'birthdate': birthdate.toIso8601String(),
+      'profile_picture_url': userPhoto, // Updated line
     };
-  }
-
-  // Factory constructor to create a UserRegistration object from a map
-  factory UserRegistration.fromJson(Map<String, dynamic> json) {
-    return UserRegistration(
-      user_id: json['user_id'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
-      sex: json['sex'],
-      address: json['address'],
-      birthdate: DateTime.parse(json['birthdate']),
-      userPhoto: json['userPhoto'],
-    );
   }
 }

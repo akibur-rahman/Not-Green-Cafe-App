@@ -66,6 +66,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
+        centerTitle: true,
+        backgroundColor: Colors.green[300],
       ),
       body: Column(
         children: [
