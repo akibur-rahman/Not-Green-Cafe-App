@@ -145,10 +145,13 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(width: 4),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AdminLoginPage()));
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminLoginPage(),
+                            ),
+                            (route) => false,
+                          );
                         },
                         child: Text(
                           "Login Here",

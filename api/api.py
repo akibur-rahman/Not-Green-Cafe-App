@@ -96,6 +96,46 @@ def insert_menu_item():
         if connection:
             connection.close()
 
+
+# Update menu item
+@app.route('/update_menu_items', methods=['PUT'])
+def update_menu_item():
+    try:
+        # Connect to the database
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+
+        # Get menu item data from the request
+        data = request.get_json()
+        item_id = data.get('item_id')
+        name = data.get('name')
+        description = data.get('description')
+        price = data.get('price')
+        category = data.get('category')  # Retrieve category as string
+        image_url = data.get('image_url')
+
+        # Validate that all required fields are provided
+        if not item_id or not name or not description or not price or not category or not image_url:
+            return jsonify({'error': 'All fields are required'}), 400
+
+        # Update the menu item into the database
+        query = "UPDATE menu_items SET name = %s, description = %s, price = %s, category = %s, image_url = %s WHERE item_id = %s"
+        params = (name, description, price, category, image_url, item_id)
+        cursor.execute(query, params)
+
+        # Commit the transaction
+        connection.commit()
+
+        return jsonify({'message': 'Menu item updated successfully'}), 201
+
+    except Exception as e:
+        print(f'Error: {e}')
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+    finally:
+        print(f'Data received: {data}')
+        if connection:
+            connection.close()
 # Route to get all orders using raw SQL query
 
 

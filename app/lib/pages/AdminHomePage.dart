@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:app/models/menuItem.dart';
 import 'package:app/pages/AdminLoginPage.dart';
+import 'package:app/pages/MenuItemUpdatePage.dart';
+import 'package:app/pages/OrdersPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -227,11 +229,58 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ),
             ),
             ListTile(
+              leading: Icon(Icons.attach_money),
+              title: const Text('Orders'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrdersPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => AdminLoginPage()));
+                //show aler dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Logout'),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Text('Are you sure you want to logout?'),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            //replace the page and clear the stack, pushReplacement doesnt work
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AdminLoginPage(),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                          child: Text('Logout'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
@@ -242,10 +291,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              print('tapped');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MenuItemUpdatePage(
+                    menuItem: menuItems[index],
+                  ),
+                ),
+              );
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(2.0),
               child: Card(
                 elevation: 3,
                 clipBehavior: Clip.antiAlias,
