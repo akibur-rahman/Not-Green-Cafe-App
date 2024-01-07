@@ -32,8 +32,8 @@ class _OrdersPageState extends State<OrdersPage> {
           orders = responseData.map((order) {
             return Order(
               orderId: order['order_id'],
-              customerId: order['customer_id'],
-              itemId: order['item_id'],
+              customerName: order['customer_name'],
+              itemName: order['item_name'],
               quantity: order['quantity'],
               totalPrice:
                   double.tryParse(order['total_price'].toString()) ?? 0.0,
@@ -58,6 +58,14 @@ class _OrdersPageState extends State<OrdersPage> {
         title: const Text('Orders'),
         centerTitle: true,
         backgroundColor: Colors.green[300],
+        actions: [
+          IconButton(
+            onPressed: () {
+              fetchOrders();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: orders.length,
@@ -71,8 +79,8 @@ class _OrdersPageState extends State<OrdersPage> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Customer ID: ${orders[index].customerId}'),
-                    Text('Item ID: ${orders[index].itemId}'),
+                    Text('Customer Name: ${orders[index].customerName}'),
+                    Text('Item Name: ${orders[index].itemName}'),
                     Text('Quantity: ${orders[index].quantity}'),
                     Text(
                         'Total Price: ${orders[index].totalPrice.toStringAsFixed(2)}'),

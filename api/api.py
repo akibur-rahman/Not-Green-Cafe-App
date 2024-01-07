@@ -149,7 +149,18 @@ def get_orders():
         connection = mysql.connector.connect(**DATABASE_CONFIG)
         cursor = connection.cursor(dictionary=True)
 
-        query = "SELECT order_id, customer_id, item_id, quantity, total_price, status FROM orders"
+        query = """
+            SELECT 
+                o.order_id, 
+                c.name as customer_name,
+                m.name as item_name,
+                o.quantity, 
+                o.total_price, 
+                o.status 
+            FROM orders o
+            JOIN users c ON o.customer_id = c.user_id
+            JOIN menu_items m ON o.item_id = m.item_id
+        """
         cursor.execute(query)
         orders = cursor.fetchall()
 
@@ -157,8 +168,8 @@ def get_orders():
         for order in orders:
             orders_list.append({
                 'order_id': order['order_id'],
-                'customer_id': order['customer_id'],
-                'item_id': order['item_id'],
+                'customer_name': order['customer_name'],
+                'item_name': order['item_name'],
                 'quantity': order['quantity'],
                 'total_price': order['total_price'],
                 'status': order['status']
