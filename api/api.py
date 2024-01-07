@@ -174,6 +174,47 @@ def get_orders():
             connection.close()
 
 
+@app.route('/update_order_status', methods=['PUT'])
+def update_order_status():
+    try:
+        # Connect to the database
+        connection = mysql.connector.connect(**DATABASE_CONFIG)
+        cursor = connection.cursor(dictionary=True)
+
+        # Get order data from the request
+        data = request.get_json()
+        order_id = data.get('order_id')
+        new_status = data.get('new_status')
+
+        # Validate that all required fields are provided
+        if not order_id or not new_status:
+            return jsonify({'error': 'Order ID and new status are required'}), 400
+
+        # Check if the new status is valid
+        valid_statuses = {'Processing', 'Confirmed', 'Delivered'}
+        if new_status not in valid_statuses:
+            return jsonify({'error': 'Invalid status'}), 400
+
+        # Update the order status in the database
+        query = "UPDATE orders SET status = %s WHERE order_id = %s"
+        params = (new_status, order_id)
+        cursor.execute(query, params)
+
+        # Commit the transaction
+        connection.commit()
+
+        return jsonify({'message': 'Order status updated successfully'}), 200
+
+    except Exception as e:
+        print(f'Error: {e}')
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+    finally:
+        print(f'Data received: {data}')
+        if connection:
+            connection.close()
+
+
 @app.route('/login', methods=['POST'])
 def login():
     try:
