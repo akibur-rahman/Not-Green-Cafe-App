@@ -29,7 +29,10 @@ class _OrdersPageState extends State<OrdersPage> {
         final List<dynamic> responseData = json.decode(response.body);
 
         setState(() {
-          orders = responseData.map((order) {
+          // Filter out orders with status 'Delivered'
+          orders = responseData
+              .where((order) => order['status'] != 'Delivered')
+              .map((order) {
             return Order(
               orderId: order['order_id'],
               customerName: order['customer_name'],
@@ -48,6 +51,40 @@ class _OrdersPageState extends State<OrdersPage> {
     } catch (e) {
       // Handle network or decoding errors
       print('Error: $e');
+    }
+  }
+
+  Future<void> updateOrderStatus(String orderId, String newStatus) async {
+    final apiUrl = 'http://10.0.2.2:5000/update_order_status';
+
+    try {
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'order_id': orderId, 'new_status': newStatus}),
+      );
+
+      if (response.statusCode == 200) {
+        // Order status updated successfully, refresh orders
+        fetchOrders();
+      } else {
+        // Handle API error
+        print('Error: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      // Handle network or decoding errors
+      print('Error: $e');
+    }
+  }
+
+  String getStatusButtonText(String status) {
+    switch (status) {
+      case 'Processing':
+        return 'Confirm Order';
+      case 'Confirmed':
+        return 'Deliver Order';
+      default:
+        return 'Unknown Action';
     }
   }
 
@@ -85,6 +122,49 @@ class _OrdersPageState extends State<OrdersPage> {
                     Text(
                         'Total Price: ${orders[index].totalPrice.toStringAsFixed(2)}'),
                     Text('Status: ${orders[index].status}'),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Update order status based on the current status
+                        String newStatus =
+                            (orders[index].status == 'Processing')
+                                ? 'Confirmed'
+                                : 'Delivered';
+                        updateOrderStatus(orders[index].orderId, newStatus);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            // Set button color based on the order status
+                            if (orders[index].status == 'Processing') {
+                              return Colors.red; // Set to red for Processing
+                            } else if (orders[index].status == 'Confirmed') {
+                              return Colors.green; // Set to green for Confirmed
+                            } else {
+                              return Colors
+                                  .blue; // Set a default color for other statuses
+                            }
+                          },
+                        ),
+                        //set textcolor based on the button color
+                        foregroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            // Set button color based on the order status
+                            if (orders[index].status == 'Processing') {
+                              return Colors
+                                  .white; // Set to white for Processing
+                            } else if (orders[index].status == 'Confirmed') {
+                              return Colors.white; // Set to white for Confirmed
+                            } else {
+                              return Colors
+                                  .white; // Set a default color for other statuses
+                            }
+                          },
+                        ),
+                      ),
+                      child: Text(getStatusButtonText(orders[index].status)),
+                    ),
                   ],
                 ),
               ),
