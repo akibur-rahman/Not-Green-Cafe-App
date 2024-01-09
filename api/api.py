@@ -1,4 +1,3 @@
-# Import your database configuration module
 import secrets
 from config import DATABASE_CONFIG
 from flask import jsonify, session, request
