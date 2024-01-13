@@ -1,6 +1,5 @@
 import secrets
 from config import DATABASE_CONFIG
-from flask import jsonify, session, request
 from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
@@ -277,15 +276,15 @@ def login():
 
 # ...
 
-@app.route('/home', methods=['GET'])
-def home():
-    # Check if user is logged in by checking if user_id is in session
-    if 'user_id' in session:
-        return jsonify({'message': 'Welcome to the Home Page'})
-    else:
-        return jsonify({'error': 'Unauthorized'}), 401
+# @app.route('/home', methods=['GET'])
+# def home():
+#     # Check if user is logged in by checking if user_id is in session
+#     if 'user_id' in session:
+#         return jsonify({'message': 'Welcome to the Home Page'})
+#     else:
+#         return jsonify({'error': 'Unauthorized'}), 401
 
-# ...
+# # ...
 
 
 @app.route('/place_order', methods=['POST'])
@@ -440,9 +439,9 @@ def register():
     finally:
         if cursor:
             cursor.close()
+
+
 # Ensure to add this part to close the connection after the server is stopped
-
-
 @app.teardown_appcontext
 def close_connection(exception=None):
     connection = mysql.connector.connect(**DATABASE_CONFIG)
